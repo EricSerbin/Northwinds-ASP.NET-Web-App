@@ -1,0 +1,280 @@
+﻿@model IEnumerable<WebApplication1.Data.Model.ModelDB.Supplier>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
+<link rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+<h2 class="emphasized">Index</h2>
+
+<p>
+    @*@Html.ActionLink("Create New", "Create")*@
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-info" })
+</p>
+<table id="mytable" class="table table-striped table-borderless collapse-horizontal">
+    <thead>
+
+
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Region)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PostalCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HomePage)
+            </th>
+
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="white-space:nowrap">
+                    <div class="btnSupplies btn btn-dark" data-filler="@item.SupplierID" style="">Retrieve Products</div>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.SupplierID }, new { @class = "btn btn-success" }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.SupplierID }, new { @class = "btn btn-warning" }) |
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CompanyName)
+                </td>
+                <td>
+                    @*<div class="btnEdit text-info" data-id="@item.SupplierID">@item.ContactName</div>*@
+                    <div data-namebyid="@item.SupplierID">@item.ContactName </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContactTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Region)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PostalCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fax)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HomePage)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.SupplierID }, new { @class = "btn btn-danger", @style = "font-weight:600" })
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="modal" id="supplierModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contact Editor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            @*//"{"ProductID":0,"ProductName":"Côte de Blaye","SupplierID":null,"CategoryID":null,"QuantityPerUnit":"12 - 75 cl bottles",
+                "UnitPrice":263.5000,"UnitsInStock":17,"UnitsOnOrder":0,"ReorderLevel":null,"Discontinued":false,"Category":null,
+                "Order_Details":[],"Supplier":null}" JSON format*@
+            <div class="modal-body">
+                <div class="container">
+                    <table class="table table-striped" id="tblSupplier">
+                    </table>
+                    
+
+                </div>
+              
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                @*<button id="btnReturn" type="button" class="btn btn-primary">Return/Send Supplies</button>*@
+                <button id="btnReturn" type="button" class="btn btn-primary">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <script>
+
+        var _id = "";
+        $(".btnSupplies").on("click", function () {
+       /* $("#btnEdit").on("click", function () {*/
+
+            /*console.log($("#inputName").val());
+            console.log($("#inputTitle").val());*/
+            /*var name = $("#inputName").val();
+            var title = $("#inputTitle").val();*/
+
+            var id = "";
+            id = $(this).data("filler");
+            _id = id;
+            console.log("id is " + id);
+
+            var title = $('[data-namebyid="' + id + '"]').text();
+            var titleRef = $('[data-namebyid="' + id + '"]');
+
+            console.log(title); //name
+            console.log(titleRef); //jquery fn init of length, prototype object
+            console.log(id); //ID
+            console.log("break point");
+            $("#supplierModal").modal("show");
+            //$('div[data-namebyid="' + id + '"]').each(function())
+            //console.log($('[data-namebyid="' + id + '"]')
+            console.log("data nameID");
+            console.log($('[data-namebyid="' + id + '"]'));
+
+
+            //$("#supplierModal").modal("show");
+
+            $('div[data-namebyid="' + id + '"]').each(function () {
+                /*alert("id is " + id);*/
+                console.log(id);
+            });
+
+            $.ajax({
+                url: "/supplier/returnsupplierinfo",
+                type: "GET",
+                data: {
+
+                    id: id
+                },
+                dataType: "json",
+                success: function (result) {
+
+                    /*
+                    var infoModal = jQuery("#supplierModal");
+                    infoModal.find('modal-body').html(result[0].ProductName);*/
+
+                    var buildTable = "<tr><th> Product Name </th><th> Quantity Per Unit </th><th> Units In Stock </th></tr>";
+
+                    $.each(result, function (i,v) {
+                        buildTable += "<tr><td>" + v.productName + "</td>" + "<td>" + v.quantityPerUnit + "</td>" + "<td>" + v.unitsInStock + "</td></tr>";
+                        console.log(v);
+                    });
+                    
+                    $("#tblSupplier").html(buildTable);
+
+
+
+                    //debugger           //ask about data transfer objects, object serialization and when to use custom serializers, when to modify global jsonserializer vs local, etc.
+                    console.log("this is the function result")
+                    console.log(result);
+
+                   // if (result == true) {
+                       /* $("#customerModal").modal("hide");*/
+                        /*$('[data-id="' + _id + '"]').text(name);*/
+                        //$('[data-titlebyid="' + _id + '"]').text(title);
+                            @* window.location = "@Url.Content( "~/customer")";*@
+
+                  //  }
+                },
+
+                error: function (xhr, status, error) {
+                    alert("error");
+                    console.log("this is the error result")
+                    console.log(result);
+                },
+
+
+
+            });
+
+        });
+
+
+        $('#mytable').dataTable({
+
+            'columnDefs': [{ 'orderable': false, 'targets': [0, 12] }], // hide sort icon on header of first column
+
+            'aaSorting': [[1, 'asc']] // start to sort data in second column
+
+        });
+        //        $(".btnSupplies").on("click", function () {
+        $("#btnReturn").on("click", function () {
+
+            var id = "";
+            id = _id;
+            //id = $(this).data("filler");
+            console.log("id is " + id);
+            
+            ".btnSupplies"
+            var supplierEditPage = "~/supplier/edit/" + id;
+            @*//window.location.href = "@Url.Content(supplierEditPage)";*@
+            $.ajax({
+                url: "/supplier/edit",
+                type: "GET",
+                data: {
+                    id: id
+                },
+
+                dataType: "json",
+
+                success: function (result) {
+
+                        window.location.href = "@Url.Content( "~/supplier/edit/")";
+
+                },
+
+                error: function (xhr, status, error) {
+                    alert("error");
+                }
+
+        });
+        });
+
+    </script>
+}
+
+@*//build another index ppage for supplies (done), have another button for producst
+    //that oepsnt he modals, and list out all the pproducts that supplier has, like where supplier.ID = 1
+    //and return the product names, stuff that fits into a small modal*@

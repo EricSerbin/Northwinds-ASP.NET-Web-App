@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+
+    var action = ViewContext.RouteData.Values["action"].ToString().ToLower();
+
+}
+<style>
+    .button:hover:active {
+        background-color: lightslategrey;
+        color: purple;
+        transition: .5s;
+    }
+
+    .btn-outline-light:hover:active {
+        background-color: deeppink;
+        color: hotpink;
+        transition: .5s;
+    }
+    .orangeHighlight a:hover{
+        background:orange
+    }
+</style>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @*<link href="~/Content/custom.css" rel="stylesheet" />*@
+    <script src="https://fontawesome.com/icons/hippo?f=classic&s=solid"></script>
+    @*<i class="fa-solid fa-hippo"></i>*@
+</head>
+<body>
+
+    <!--<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("Eric's App", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })-->
+    @*<a href="https://google.com">Google</a>*@
+    @*Hello this is a comment for future reference*@
+    <!--<button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+        <ul class="navbar-nav flex-grow-1">
+            <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+            <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+            <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>-->
+    @*<li>@Html.ActionLink("CustomerX", "Customer", "Home", new { area = "" }, new { @class = "nav-link" })</li>  Original setup*@
+    <!--<li>@Html.ActionLink("CustomerX", "Index", "Customer", new { area = "" }, new { @class = "nav-link" })</li>
+
+    <li>@Html.ActionLink("Employees", "Index", "Employee", new { area = "" }, new { @class = "nav-link" })</li>
+    <li>@Html.ActionLink("SupplierX", "Index", "Supplier", new { area = "" }, new { @class = "nav-link" })</li>-->
+    @*The methods have to match for second category *@
+
+    <!--</ul>
+            </div>
+        </div>
+    </nav>-->
+    <header class="p-3 text-bg-dark">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0} orangeHighlight">
+                    @*TODO add mouseover feature*@
+                    <li class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0}">
+                        <a class="d-flex align-items-center mb-2 mb-lg-0 nav-link px-2  btn  @(controller== "home" ? "btn text-primary text-light:active" : "btn text-secondary" )" href="@Url.Content("~/Home/Index")/" role="button">
+                            @*The ternary keeps colors static*@
+                            HomeTest
+
+                        </a>
+                        <button class="btn btn-danger:hover:active " type="submit">Hidden Button</button>
+                        <a class="nav-link px-2 btn-outline-primary:hover:active   @(controller== "about" ? "btn text-primary" : "btn text-secondary" )" href="@Url.Content("~/Home/About")/">
+                            About
+                        </a>
+                        <a class="d-flex align-items-center mb-2 mb-lg-0 nav-link px-2 btn  @(controller== "~contact" ? "text-primary" : "text-secondary" )" href="@Url.Content("~/Home/Contact")/" role="button">
+                            Contact
+                        </a>
+
+
+                        <a class="d-flex align-items-center mb-2 mb-lg-0 nav-link px-2 btn btn-warning:hover @(controller== "customer" ? "btn text-primary text-secondary:hover" : "btn text-secondary text-primary:hover" )" href="@Url.Content("~/Customer")/" role="button">
+                            CustomerX
+                        </a>
+
+                        <a class="d-flex align-items-center mb-2 mb-lg-0 nav-link px-2 btn btn-warning:hover @(controller== "supplier" ? "btn text-primary text-secondary:hover" : "btn text-secondary text-primary:hover" )" href="@Url.Content("~/Supplier")/" role="button">
+                            Supplier
+                        </a>
+                        <a class="d-flex align-items-center mb-2 mb-lg-0 nav-link px-2 btn btn-warning:hover @(controller== "supplierproducts" ? "btn text-primary text-secondary:hover" : "btn text-secondary text-primary:hover" )" href="@Url.Content("~/SupplierProducts")/" role="button">
+                            SupplierProducts
+                        </a>
+
+</ul>
+
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+                </form>
+
+                <div class="text-end">
+                    <button type="button" class="btn btn-outline-light me-2">Login</button>
+                    <button type="button" class="btn btn-warning">Sign-up</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    
+    @*<input type="submit" name="interactionPositive" value="Approve" formmethod="post" class="btn btn-primary" />
+    <input type="submit" name="interactionNegative" value="Decline" formmethod="post" class="btn btn-danger" />*@
+    @section  scripts{
+
+        <script type="text/javascript">
+            $(function () {
+
+                addEventListener(onmouseenter)
+                {
+                    alert("seen")
+                    var textColor = document.getElementsByClassName(nav - link)
+                    var textColor2 = document.getElementsByClassName(HTMLLinkElement)
+
+
+
+                    return HTMLLIElement.text.apply(text - primary);
+                    HTMLLIElement.apply(text - primary)
+                }
+            })
+
+        </script>
+    }
+</body>
+</html>

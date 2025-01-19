@@ -1,0 +1,168 @@
+﻿@model IEnumerable<WebApplication1.Data.Model.ModelDB.Product>
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+<link href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
+
+<style>
+    .slider {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+        .slider table {
+            width: 100%;
+        }
+
+        .slider td {
+            padding: 5px;
+        }
+
+    .details-control {
+        cursor: pointer;
+    }
+</style>
+<table id="mytable" class="table collapse-horizontal table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>@Html.DisplayNameFor(model => model.ProductName)</th>
+
+            <th>@Html.DisplayNameFor(model => model.ProductID)</th>
+
+            <th>@Html.DisplayNameFor(model => model.Discontinued)</th>
+
+            <th>@Html.DisplayNameFor(model => model.UnitPrice)</th>
+
+            <th>@Html.DisplayNameFor(model => model.QuantityPerUnit)</th>
+
+            <th>@Html.DisplayNameFor(model => model.UnitsInStock)</th>
+
+            <th>@Html.DisplayNameFor(model => model.UnitsOnOrder)</th>
+
+            <th>@Html.DisplayNameFor(model => model.Category)</th>
+
+            <th>@Html.DisplayNameFor(model => model.Supplier.CompanyName) </th>
+
+            <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>
+            @*<th class="details-control">@Html.DisplayNameFor(model => model.Category)</th>*@
+           @* <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>*@
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            //var base64Picture = item.Category?.Picture != null ? Convert.ToBase64String(item.Category.Picture) : null;
+
+            <tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
+                data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">
+                
+                <td class="details-control">+</td>
+                <td>@Html.DisplayFor(model => item.ProductName) </td>
+
+                <td>@Html.DisplayFor(model => item.ProductID)</td>
+
+                <td>@Html.DisplayFor(model => item.Discontinued) </td>
+
+                <td>@Html.DisplayFor(model => item.UnitPrice) </td>
+
+                <td>@Html.DisplayFor(model => item.QuantityPerUnit) </td>
+
+                <td>@Html.DisplayFor(model => item.UnitsInStock) </td>
+
+                <td>@Html.DisplayFor(model => item.UnitsOnOrder) </td>
+
+                <td>@Html.DisplayFor(model => item.Category.CategoryName)</td>
+
+                <td>@Html.DisplayFor(model => item.Supplier.CompanyName) </td>
+
+                <td>Consider putting photos here</td>
+
+                @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
+                This displays every image in order at the top of the page, good for unit testing *@
+                @*DisplayFor seems to override the requirement for display templates?*@
+            </tr>
+
+            }
+
+        </tbody>
+
+</table>
+
+@section  scripts{
+    <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            var table = $('#mytable').DataTable({
+                'columnDefs': [{ 'orderable': false, 'targets': [0] }, { className: 'details-control', targets: [0] }],
+                'aaSorting': [[1, 'asc']],
+                //'columns.footer': 'All products belong to one supplier'
+                //'class':'details-control', , 0-7 for targets
+            });
+
+
+
+            function format(name, description, id, picture) {
+
+                /*'padding - right: 30px;'*/
+                return '<div class="slider">' +
+                    '<table cellpadding="5" cellspacing="0"  border="0" style="padding-left:50px;">' +
+                    '<tr>' +
+                    '<td>Category Name:</td>' +
+                    '<td>' + name + '</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Category Description:</td>' +
+                    '<td>' + description + '</td>' +
+                    '</tr>' +
+                    '<td>Category ID:</td>' +
+                    '<td>' + id + '</td>' +
+                    '</tr>' +
+                    '<tr>' +
+
+                    '<td>Category Picture:</td>' +
+                    '<td>' + "<img src = " + picture + " alt='Image unavailable' style ='border-radius: 15%'  />"+ '</td>' + 
+
+                    '</tr>' +
+                    '</table>' +
+                    '</div>'; 
+
+            }
+
+            $('#mytable tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr'); //gets closest to cursor
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    $('div.slider', row.child()).slideUp(function () {
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    });
+                }
+                else {
+
+                    var TrHolder = tr.data('categorypicture');
+                    row.child(format(tr.data('categoryname'), tr.data('categorydescription'), tr.data('categoryid'), TrHolder), 'no-padding').show();
+                    //row.child(format(tr.data('categoryname'), tr.data('categorydescription'), tr.data('categoryid'), tr.data('categorypicture')), 'no-padding').show();
+                    //row.child(format(row.data()), 'no-padding').show(); //good for debugging
+
+                    tr.addClass('shown');
+                    $('div.slider', row.child()).slideDown();
+                }
+            });
+        });
+    </script>
+    }
+
+   
