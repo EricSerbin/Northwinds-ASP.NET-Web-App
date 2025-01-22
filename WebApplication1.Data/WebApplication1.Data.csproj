@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ProductExt.cs" />
     <Compile Include="Model\ModelDB\Category.cs">
       <DependentUpon>Northwinds2.tt</DependentUpon>
     </Compile>

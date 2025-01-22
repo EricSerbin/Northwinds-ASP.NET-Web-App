@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WebApplication1.Data.Model.ModelDB;
 using Dapper;
 using System.Data.SqlClient;
+using WebApplication1.Data.Models;
 
 namespace WebApplication1.Data.Repositories
 {
@@ -18,7 +19,7 @@ namespace WebApplication1.Data.Repositories
             _connectionString = context.Database.Connection.ConnectionString;
         }
 
-        public IEnumerable<Product> GetProductBySupplier(int? id)
+        public IEnumerable<Product> GetProductBySupplier(int? id) //Entity Framework Method
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -27,7 +28,7 @@ namespace WebApplication1.Data.Repositories
             }
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public IEnumerable<Product> GetAllProducts() //Entity Framework method
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -35,29 +36,63 @@ namespace WebApplication1.Data.Repositories
                 var sql = "SELECT * FROM Products";
                 return conn.Query<Product>(sql, new { }).ToList();  
 
-                //return conn.Query<Product>(sql, new { Ids = ids }).ToList();
+            }
+        }
+        public IEnumerable<ProductExt> GetProductBySupplierExt(int? id)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT 
+                            ProductID
+	                            ,p.ProductName
+	                            ,p.SupplierID
+	                            ,P.CategoryID
+	                            ,p.QuantityPerUnit
+	                            ,p.UnitPrice
+	                            ,p.UnitsInStock
+	                            ,p.UnitsOnOrder
+	                            ,p.ReorderLevel
+	                            ,p.Discontinued
+	                            ,s.CompanyName
+	                            ,c.CategoryName
+                                ,c.Description
+                                ,c.Picture
+                            FROM Products p
+                            left join Suppliers s on p.SupplierID = s.SupplierID
+                            left join Categories c on c.CategoryID = p.CategoryID
 
+                            WHERE p.SupplierID = @id";
+                return conn.Query<ProductExt>(sql, new { id }).ToList();
+            }
+        }
+        public IEnumerable<ProductExt> GetAllProductsExt()
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
 
-                /*var sql = "SELECT * FROM Products";
-                //var productIndicesSpeculative = "SELECT * FROM ProductID";
-                var productIndices = "SELECT P.ProductID FROM Products P";  //way of extracting all IDs 
-
-                System.Diagnostics.Debug.WriteLine(productIndices);
-                //var connList = conn.Query<Product>(productIndices);
-
-                for (int i = 0; i < productIndices.Count(); i++) //the count uses the select phrase, may require AS
-                {
-                    System.Diagnostics.Debug.WriteLine(i);
-                    //var sql = "SELECT * FROM Products WHERE ProductID = @productIndices[i]";
-                    z = i;
-                }
-                var lengthList = productIndices.Count();
-                //return conn.Query<Product>(sql, new { lengthList }).ToList();
-                return conn.Query<Product>(sql, new {productIndices}).ToList();*/
+                var sql = @"SELECT 
+                            ProductID
+	                            ,p.ProductName
+	                            ,p.SupplierID
+	                            ,P.CategoryID
+	                            ,p.QuantityPerUnit
+	                            ,p.UnitPrice
+	                            ,p.UnitsInStock
+	                            ,p.UnitsOnOrder
+	                            ,p.ReorderLevel
+	                            ,p.Discontinued
+	                            ,s.CompanyName
+	                            ,c.CategoryName
+                                ,c.Description
+                                ,c.Picture
+                            FROM Products p
+                            left join Suppliers s on p.SupplierID = s.SupplierID
+                            left join Categories c on c.CategoryID = p.CategoryID";
+                return conn.Query<ProductExt>(sql, new { }).ToList();
 
             }
         }
-        
+
     }
 }
 

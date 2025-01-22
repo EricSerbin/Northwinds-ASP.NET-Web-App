@@ -1,4 +1,5 @@
-﻿@model IEnumerable<WebApplication1.Data.Model.ModelDB.Product>
+﻿@model IEnumerable<WebApplication1.Data.Models.ProductExt>
+@*@model IEnumerable<WebApplication1.Data.Model.ModelDB.Product>*@
 
 
 @{
@@ -49,7 +50,9 @@
 
             <th>@Html.DisplayNameFor(model => model.Category)</th>
 
-            <th>@Html.DisplayNameFor(model => model.Supplier.CompanyName) </th>
+            <th>CompanyName</th>
+
+
 
             <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>
             @*<th class="details-control">@Html.DisplayNameFor(model => model.Category)</th>*@
@@ -63,38 +66,59 @@
         {
             //var base64Picture = item.Category?.Picture != null ? Convert.ToBase64String(item.Category.Picture) : null;
 
-            <tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
-                data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">
-                
-                <td class="details-control">+</td>
-                <td>@Html.DisplayFor(model => item.ProductName) </td>
+            @*<tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
+            data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">*@
 
-                <td>@Html.DisplayFor(model => item.ProductID)</td>
+        <tr data-categoryname="@(item?.CategoryName)" data-categorydescription="@(item?.Description)"
+            data-categoryid="@(item?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item?.Picture)">
 
-                <td>@Html.DisplayFor(model => item.Discontinued) </td>
+            <td class="details-control">+</td>
+            @*<td>@Html.DisplayFor(model => item.ProductName) </td>
 
-                <td>@Html.DisplayFor(model => item.UnitPrice) </td>
+        <td>@Html.DisplayFor(model => item.ProductID)</td>
 
-                <td>@Html.DisplayFor(model => item.QuantityPerUnit) </td>
+        <td>@Html.DisplayFor(model => item.Discontinued) </td>
 
-                <td>@Html.DisplayFor(model => item.UnitsInStock) </td>
+        <td>@Html.DisplayFor(model => item.UnitPrice) </td>
 
-                <td>@Html.DisplayFor(model => item.UnitsOnOrder) </td>
+        <td>@Html.DisplayFor(model => item.QuantityPerUnit) </td>
 
-                <td>@Html.DisplayFor(model => item.Category.CategoryName)</td>
+        <td>@Html.DisplayFor(model => item.UnitsInStock) </td>
 
-                <td>@Html.DisplayFor(model => item.Supplier.CompanyName) </td>
+        <td>@Html.DisplayFor(model => item.UnitsOnOrder) </td>*@
 
-                <td>Consider putting photos here</td>
+            @*<td>@Html.DisplayFor(model => item.Category.CategoryName)</td>
 
-                @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
-                This displays every image in order at the top of the page, good for unit testing *@
-                @*DisplayFor seems to override the requirement for display templates?*@
-            </tr>
+        <td>@Html.DisplayFor(model => item.Supplier.CompanyName) </td>*@
 
-            }
 
-        </tbody>
+            <td>@(item?.ProductName) </td>
+
+            <td>@(item?.ProductID)</td>
+
+            <td>@(item?.Discontinued) </td>
+
+            <td>@(item?.UnitPrice) </td>
+
+            <td>@(item?.QuantityPerUnit) </td>
+
+            <td>@(item?.UnitsInStock) </td>
+
+            <td>@(item?.UnitsOnOrder) </td>
+
+            <td>@(item?.CategoryName)</td>
+
+            <td>@(item?.CompanyName)</td>
+            <td>Consider putting photos here</td>
+
+            @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
+        This displays every image in order at the top of the page, good for unit testing *@
+            @*DisplayFor seems to override the requirement for display templates?*@
+        </tr>
+
+        }
+
+    </tbody>
 
 </table>
 

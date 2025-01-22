@@ -36,16 +36,19 @@ namespace WebApplication1.Controllers
         {
             if(id!=null)
             {
-                var products = productRepository.GetProductBySupplier(id);
+                //var products = productRepository.GetProductBySupplier(id);
+                var products = productRepository.GetProductBySupplierExt(id);
                 return View(products);
             }
             else
             {
               
-                var products = productRepository.GetAllProducts();
+                //var products = productRepository.GetAllProducts();
+                var products = productRepository.GetAllProductsExt();
+
                 System.Diagnostics.Debug.WriteLine(products);
-                //return View(products); //must not be attaching correctly
-                return View(db.Products);
+                return View(products); //must not be attaching correctly
+                //return View(db.Products);
             }
             
         }
