@@ -8,7 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
 using WebApplication1.Data.Model.ModelDB;
+using WebApplication1.Data.Models;
 using WebApplication1.Data.Repositories;
+
 
 namespace WebApplication1.Controllers
 {
@@ -78,7 +80,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customer customer = customerRepository.Find(id);
+            CustomerExt customer = customerRepository.Find(id);
             //Customer customer = db.Customers.Find(id);
             if (customer == null)
             {
@@ -92,7 +94,7 @@ namespace WebApplication1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] Customer customer)
+        public ActionResult Edit([Bind(Include = "ID,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] CustomerExt customer)
         {
             if (ModelState.IsValid)
             {

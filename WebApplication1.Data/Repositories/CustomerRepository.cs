@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApplication1.Data.Model.ModelDB;
 using Dapper;
+using WebApplication1.Data.Models;
 
 namespace WebApplication1.Data.Repositories
 {
@@ -36,12 +37,12 @@ namespace WebApplication1.Data.Repositories
             return false;
         }
 
-        public Customer Find(int? id)
+        public CustomerExt Find(int? id)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
                 var sql = "SELECT * FROM Customers WHERE ID = @id";
-                return conn.Query<Customer>(sql, new { id }).FirstOrDefault();
+                return conn.Query<CustomerExt>(sql, new { id }).FirstOrDefault();
             }
         }
 

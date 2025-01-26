@@ -8,21 +8,17 @@ using WebApplication1.Data.Model.ModelDB;
 
 namespace WebApplication1.Data.Models
 {
-
-    public class ProductExt : Product 
+    public abstract class CustomerExt : Customer
     {
         [Required]
         [StringLength(10)]
-        public string CompanyName { get; set; }
+        public new string CompanyName { get; set; }
 
-        [Required]    
-        public string CategoryName { get; set; }
+        [Required]
+        [Range(0, 10)]
+        public int Number { get; set; }
 
-        public new string CategoryID { get; set; }
-
-        public string Description { get; set; }
-
-        public byte[] Picture { get; set; }
-
+        [Required]
+        public new string ContactName { get; set; }
     }
 }

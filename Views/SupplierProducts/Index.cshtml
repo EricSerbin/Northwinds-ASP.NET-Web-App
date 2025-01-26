@@ -34,6 +34,7 @@
     <thead>
         <tr>
             <th></th>
+            <th></th>
             <th>@Html.DisplayNameFor(model => model.ProductName)</th>
 
             <th>@Html.DisplayNameFor(model => model.ProductID)</th>
@@ -72,26 +73,13 @@
         <tr data-categoryname="@(item?.CategoryName)" data-categorydescription="@(item?.Description)"
             data-categoryid="@(item?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item?.Picture)">
 
+
+            <td>
+                <a href="@Url.Action("Edit", "SupplierProducts", new { id = item.ProductID })" class="btn btn-success">Edit</a>
+            </td>
+            @*@Html.ActionLink("Edit", "Edit", new { id = item.ProductID }, new { @class = "btn btn-success" })*@
+
             <td class="details-control">+</td>
-            @*<td>@Html.DisplayFor(model => item.ProductName) </td>
-
-        <td>@Html.DisplayFor(model => item.ProductID)</td>
-
-        <td>@Html.DisplayFor(model => item.Discontinued) </td>
-
-        <td>@Html.DisplayFor(model => item.UnitPrice) </td>
-
-        <td>@Html.DisplayFor(model => item.QuantityPerUnit) </td>
-
-        <td>@Html.DisplayFor(model => item.UnitsInStock) </td>
-
-        <td>@Html.DisplayFor(model => item.UnitsOnOrder) </td>*@
-
-            @*<td>@Html.DisplayFor(model => item.Category.CategoryName)</td>
-
-        <td>@Html.DisplayFor(model => item.Supplier.CompanyName) </td>*@
-
-
             <td>@(item?.ProductName) </td>
 
             <td>@(item?.ProductID)</td>
@@ -129,7 +117,7 @@
 
 
             var table = $('#mytable').DataTable({
-                'columnDefs': [{ 'orderable': false, 'targets': [0] }, { className: 'details-control', targets: [0] }],
+                'columnDefs': [{ 'orderable': false, 'targets': [0] }, { className: 'details-control', targets: [1] }],
                 'aaSorting': [[1, 'asc']],
                 //'columns.footer': 'All products belong to one supplier'
                 //'class':'details-control', , 0-7 for targets

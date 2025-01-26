@@ -136,7 +136,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 @*<button id="btnReturn" type="button" class="btn btn-primary">Return/Send Supplies</button>*@
-                <button id="btnReturn" type="button" class="btn btn-primary">Edit</button>
+                <button id="btnReturn" type="button" class="btn btn-primary">Edit Supplier</button>
             </div>
         </div>
     </div>
@@ -201,7 +201,7 @@
                         buildTable += "<tr><td>" + v.productName + "</td>" + "<td>" + v.quantityPerUnit + "</td>" + "<td>" + v.unitsInStock + "</td></tr>";
                         console.log(v);
                     });
-                    
+
                     $("#tblSupplier").html(buildTable);
 
 
@@ -246,30 +246,9 @@
             id = _id;
             //id = $(this).data("filler");
             console.log("id is " + id);
-            
+
             ".btnSupplies"
-            var supplierEditPage = "~/supplier/edit/" + id;
-            @*//window.location.href = "@Url.Content(supplierEditPage)";*@
-            $.ajax({
-                url: "/supplier/edit",
-                type: "GET",
-                data: {
-                    id: id
-                },
-
-                dataType: "json",
-
-                success: function (result) {
-
-                        window.location.href = "@Url.Content( "~/supplier/edit/")";
-
-                },
-
-                error: function (xhr, status, error) {
-                    alert("error");
-                }
-
-        });
+            window.location.href = '@Url.Content( "~/supplier/edit/")'+id;
         });
 
     </script>
