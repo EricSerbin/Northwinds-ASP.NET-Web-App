@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Contexts;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
@@ -80,7 +81,7 @@ namespace WebApplication1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CustomerExt customer = customerRepository.Find(id);
+            Customer customer = customerRepository.Find(id);//should be CustomerExt when DbContext is integrated to distance from entity framework
             //Customer customer = db.Customers.Find(id);
             if (customer == null)
             {
@@ -94,10 +95,15 @@ namespace WebApplication1.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] CustomerExt customer)
+        public ActionResult Edit([Bind(Include = "ID,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] Customer customer) //should be customer ext when DbContext is changed
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) //good spot for break points
             {
+                /*DbContext northwinds2Entities = db;
+                northwinds2Entities.Entry(customer).State = EntityState.Modified;
+                northwinds2Entities.SaveChanges();*/
+
+
                 db.Entry(customer).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

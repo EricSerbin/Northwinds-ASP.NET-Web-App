@@ -37,14 +37,16 @@ namespace WebApplication1.Data.Repositories
             return false;
         }
 
-        public CustomerExt Find(int? id)
+        public Customer Find(int? id) //CustomerExt is more apt when DbContext is updated to distance from entity framework
         {
             using (var conn = new SqlConnection(_connectionString))
             {
                 var sql = "SELECT * FROM Customers WHERE ID = @id";
-                return conn.Query<CustomerExt>(sql, new { id }).FirstOrDefault();
+                return conn.Query<Customer>(sql, new { id }).FirstOrDefault();
             }
         }
+
+        
 
         public IEnumerable<Customer> GetCustomers()
         {

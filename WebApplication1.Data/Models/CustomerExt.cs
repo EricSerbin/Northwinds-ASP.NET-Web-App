@@ -8,17 +8,17 @@ using WebApplication1.Data.Model.ModelDB;
 
 namespace WebApplication1.Data.Models
 {
-    public abstract class CustomerExt : Customer
+    public class CustomerExt : Customer
     {
-        [Required]
+        /*[Required]
         [StringLength(10)]
-        public new string CompanyName { get; set; }
+        public new string CompanyName { get; set; }*/
 
         [Required]
         [Range(0, 10)]
         public int Number { get; set; }
 
-        [Required]
-        public new string ContactName { get; set; }
+        /*[Required]
+        public new string ContactName { get; set; }*/
     }
 }
