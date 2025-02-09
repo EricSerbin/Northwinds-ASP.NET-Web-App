@@ -1,4 +1,5 @@
-﻿@model IEnumerable<WebApplication1.Data.Model.ModelDB.Product>
+﻿@model IEnumerable<WebApplication1.Data.Models.ProductExt>
+@*@model IEnumerable<WebApplication1.Data.Model.ModelDB.Product>*@
 
 
 @{
@@ -33,6 +34,7 @@
     <thead>
         <tr>
             <th></th>
+            <th></th>
             <th>@Html.DisplayNameFor(model => model.ProductName)</th>
 
             <th>@Html.DisplayNameFor(model => model.ProductID)</th>
@@ -49,7 +51,9 @@
 
             <th>@Html.DisplayNameFor(model => model.Category)</th>
 
-            <th>@Html.DisplayNameFor(model => model.Supplier.CompanyName) </th>
+            <th>CompanyName</th>
+
+
 
             <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>
             @*<th class="details-control">@Html.DisplayNameFor(model => model.Category)</th>*@
@@ -63,38 +67,46 @@
         {
             //var base64Picture = item.Category?.Picture != null ? Convert.ToBase64String(item.Category.Picture) : null;
 
-            <tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
-                data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">
-                
-                <td class="details-control">+</td>
-                <td>@Html.DisplayFor(model => item.ProductName) </td>
+            @*<tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
+            data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">*@
 
-                <td>@Html.DisplayFor(model => item.ProductID)</td>
+        <tr data-categoryname="@(item?.CategoryName)" data-categorydescription="@(item?.Description)"
+            data-categoryid="@(item?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item?.Picture)">
 
-                <td>@Html.DisplayFor(model => item.Discontinued) </td>
 
-                <td>@Html.DisplayFor(model => item.UnitPrice) </td>
+            <td>
+                <a href="@Url.Action("Edit", "SupplierProducts", new { id = item.ProductID })" class="btn btn-success">Edit</a>
+            </td>
+            @*@Html.ActionLink("Edit", "Edit", new { id = item.ProductID }, new { @class = "btn btn-success" })*@
 
-                <td>@Html.DisplayFor(model => item.QuantityPerUnit) </td>
+            <td class="details-control">+</td>
+            <td>@(item?.ProductName) </td>
 
-                <td>@Html.DisplayFor(model => item.UnitsInStock) </td>
+            <td>@(item?.ProductID)</td>
 
-                <td>@Html.DisplayFor(model => item.UnitsOnOrder) </td>
+            <td>@(item?.Discontinued) </td>
 
-                <td>@Html.DisplayFor(model => item.Category.CategoryName)</td>
+            <td>@(item?.UnitPrice) </td>
 
-                <td>@Html.DisplayFor(model => item.Supplier.CompanyName) </td>
+            <td>@(item?.QuantityPerUnit) </td>
 
-                <td>Consider putting photos here</td>
+            <td>@(item?.UnitsInStock) </td>
 
-                @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
-                This displays every image in order at the top of the page, good for unit testing *@
-                @*DisplayFor seems to override the requirement for display templates?*@
-            </tr>
+            <td>@(item?.UnitsOnOrder) </td>
 
-            }
+            <td>@(item?.CategoryName)</td>
 
-        </tbody>
+            <td>@(item?.CompanyName)</td>
+            <td>Consider putting photos here</td>
+
+            @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
+        This displays every image in order at the top of the page, good for unit testing *@
+            @*DisplayFor seems to override the requirement for display templates?*@
+        </tr>
+
+        }
+
+    </tbody>
 
 </table>
 
@@ -105,7 +117,7 @@
 
 
             var table = $('#mytable').DataTable({
-                'columnDefs': [{ 'orderable': false, 'targets': [0] }, { className: 'details-control', targets: [0] }],
+                'columnDefs': [{ 'orderable': false, 'targets': [0] }, { className: 'details-control', targets: [1] }],
                 'aaSorting': [[1, 'asc']],
                 //'columns.footer': 'All products belong to one supplier'
                 //'class':'details-control', , 0-7 for targets

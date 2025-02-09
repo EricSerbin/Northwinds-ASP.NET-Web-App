@@ -18,6 +18,8 @@ using System.Text;
 using System.Threading.Tasks;
 using WebGrease.Activities;
 using System.IO;
+using WebApplication1.Data.Models;
+using Microsoft.Ajax.Utilities;
 
 
 namespace WebApplication1.Controllers
@@ -31,23 +33,26 @@ namespace WebApplication1.Controllers
         {
             productRepository = new ProductRepository(db);
         }
-        
+
         public ActionResult Index(int? id) //supplier ID   seems to be lazy loading?
         {
-            if(id!=null)
+            if (id != null)
             {
-                var products = productRepository.GetProductBySupplier(id);
+                //var products = productRepository.GetProductBySupplier(id);
+                var products = productRepository.GetProductBySupplierExt(id);
                 return View(products);
             }
             else
             {
-              
-                var products = productRepository.GetAllProducts();
+
+                //var products = productRepository.GetAllProducts();
+                var products = productRepository.GetAllProductsExt();
+
                 System.Diagnostics.Debug.WriteLine(products);
-                //return View(products); //must not be attaching correctly
-                return View(db.Products);
+                return View(products); //must not be attaching correctly
+                //return View(db.Products);
             }
-            
+
         }
 
         public ActionResult Details(int? id)
@@ -55,16 +60,109 @@ namespace WebApplication1.Controllers
             return null;
             //return ControllerContext.MyDisplayRouteInfo(id); //make an app for routing?
         }
-        
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var product = productRepository.GetProductBySupplierExt(id).FirstOrDefault();
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult Edit(ProductExt product)
+        {
+
+            if (ModelState.IsValid)
+            {
+                System.Diagnostics.Debug.WriteLine("model state is valid ");
+                var result = productRepository.EditProduct(product);
+                if (result)
+                {
+                    System.Diagnostics.Debug.WriteLine("model state is successful");
+                    return RedirectToAction("Index");
+                }
+                
+            }
+            
+                /*foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                System.Diagnostics.Debug.WriteLine($"Property: {state.Key}, Error: {error.ErrorMessage}");
+                    }
+                }*/
+            
+
+            System.Diagnostics.Debug.WriteLine("model state is invalid");
+            return View(product);
+
+
+            DbContext northwinds2Entities = db;
+            northwinds2Entities.Entry(product).State = EntityState.Modified;
+            northwinds2Entities.SaveChanges();
+
+
+            
+            
+            System.Diagnostics.Debug.WriteLine("model state is valid ");
+            var success = productRepository.EditProduct(product);
+            if (success)
+            {
+                System.Diagnostics.Debug.WriteLine("model state is successful");
+                return RedirectToAction("Index");
+            }
+
+            return View(product);
+            
+
+            /*if (ModelState.IsValid)
+            {
+                System.Diagnostics.Debug.WriteLine("model state is valid ");
+                var success = productRepository.EditProduct(product);
+                if (success)
+                {
+                    System.Diagnostics.Debug.WriteLine("model state is successful");
+                    return RedirectToAction("Index");
+                }
+
+                return View(product);
+            }
+            System.Diagnostics.Debug.WriteLine("model state is invalid");
+            return View(product);*/
+
+        }
+
+
+
+        /*public ActionResult Edit([Bind(Include = "ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, Discontinued")] Product product)
+
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(product).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(product);
+        }*/
     }
     public static class HtmlExtensions
     {
-        
+
         public static MvcHtmlString BufferImage(byte[] image)
         {
             //var img = string.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(image));
             //            var img =$"data:{"jpeg"};base64,{Convert.ToBase64String(image)}";
-            
+
             string alt = "";
             var base64 = Convert.ToBase64String(image);
             var imgSrc = $"data:image/png;base64,{base64}";
@@ -79,12 +177,12 @@ namespace WebApplication1.Controllers
             {
                 return MvcHtmlString.Empty;
             }
-            
+
             var strippedImageData = new byte[image.Length - 78]; //May be beneficial to extract the image dimensions from the header 
-            byte[] imageHeader =new byte [78];
+            byte[] imageHeader = new byte[78];
             Array.Copy(image, 0, imageHeader, 0, 78);
             Array.Copy(image, 78, strippedImageData, 0, strippedImageData.Length);
-            
+
             var headerBase64 = Convert.ToBase64String(imageHeader);
             var base64 = Convert.ToBase64String(strippedImageData);
             //System.Diagnostics.Debug.WriteLine("base64 stripped data is " + strippedImageData);

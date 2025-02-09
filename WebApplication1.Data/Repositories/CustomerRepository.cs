@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApplication1.Data.Model.ModelDB;
 using Dapper;
+using WebApplication1.Data.Models;
 
 namespace WebApplication1.Data.Repositories
 {
@@ -36,7 +37,7 @@ namespace WebApplication1.Data.Repositories
             return false;
         }
 
-        public Customer Find(int? id)
+        public Customer Find(int? id) //CustomerExt is more apt when DbContext is updated to distance from entity framework
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -44,6 +45,8 @@ namespace WebApplication1.Data.Repositories
                 return conn.Query<Customer>(sql, new { id }).FirstOrDefault();
             }
         }
+
+        
 
         public IEnumerable<Customer> GetCustomers()
         {
