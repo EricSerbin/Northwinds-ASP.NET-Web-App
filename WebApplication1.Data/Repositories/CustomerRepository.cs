@@ -12,11 +12,11 @@ namespace WebApplication1.Data.Repositories
 {
     public class CustomerRepository
     {
-        
+
         private readonly string _connectionString;
         public CustomerRepository(northwinds2Entities context)
         {
-            _connectionString=context.Database.Connection.ConnectionString;
+            _connectionString = context.Database.Connection.ConnectionString;
         }
 
         public bool Delete(int id)
@@ -37,16 +37,25 @@ namespace WebApplication1.Data.Repositories
             return false;
         }
 
-        public Customer Find(int? id) //CustomerExt is more apt when DbContext is updated to distance from entity framework
+        public CustomerExt Find(int? id) //CustomerExt is more apt when DbContext is updated to distance from entity framework
         {
             using (var conn = new SqlConnection(_connectionString))
             {
                 var sql = "SELECT * FROM Customers WHERE ID = @id";
-                return conn.Query<Customer>(sql, new { id }).FirstOrDefault();
+                return conn.Query<CustomerExt>(sql, new { id }).FirstOrDefault();
             }
         }
 
-        
+        /*public Customer Find(int? id) //CustomerExt is more apt when DbContext is updated to distance from entity framework
+                {
+                    using (var conn = new SqlConnection(_connectionString))
+                    {
+                        var sql = "SELECT * FROM Customers WHERE ID = @id";
+                        return conn.Query<Customer>(sql, new { id }).FirstOrDefault();
+                    }
+                }*/
+
+
 
         public IEnumerable<Customer> GetCustomers()
         {
@@ -56,14 +65,50 @@ namespace WebApplication1.Data.Repositories
 
             //var _connectionString = "Data Source=.;Initial Catalog=northwinds2Entities;user id=admin"; //DESKTOP\\SQLEXPRESS
             //var _connectionString = "Server=.;Database=Northwind;Trusted_Connection=True;";
-            using ( var conn = new SqlConnection(_connectionString))
+            using (var conn = new SqlConnection(_connectionString))
             {
-                var sql= "SELECT * FROM Customers";
+                var sql = "SELECT * FROM Customers";
                 return conn.Query<Customer>(sql);
                 //return SqlConnection.Query
                 //return db.Customers.ToList();
             }
         }
+
+        public int Update(CustomerExt customer)
+
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var sql = @"IF exists (SELECT 1 from Customers WHERE ID=@ID)
+                            BEGIN
+                               UPDATE Customers SET 
+                                    ContactName = @ContactName, 
+                                    ContactTitle = @ContactTitle,
+                                    CompanyName = @CompanyName,
+                                    Address = @Address,
+                                    City = @City,
+                                    Region = @Region,
+                                    PostalCode = @PostalCode,
+                                    Country = @Country,
+                                    Phone = @Phone,
+                                    Fax = @Fax
+                                    --Number = @Number
+                                WHERE ID = @ID
+                            END
+                            ELSE
+                            BEGIN
+                                INSERT INTO Customers
+                                (ContactName, ContactTitle, CompanyName, Address, City, Region, PostalCode, Country, Phone, Fax)
+                                VALUES
+                                (@ContactName, @ContactTitle, @CompanyName, @Address, @City, @Region, @PostalCode, @Country, @Phone, @Fax)  
+                            END";
+
+                return conn.Execute(sql, customer);
+
+            }
+        }
     }
-   
 }
+
+   
+

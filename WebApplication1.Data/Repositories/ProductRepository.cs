@@ -7,6 +7,7 @@ using WebApplication1.Data.Model.ModelDB;
 using Dapper;
 using System.Data.SqlClient;
 using WebApplication1.Data.Models;
+using Newtonsoft.Json;
 
 namespace WebApplication1.Data.Repositories
 {
@@ -174,7 +175,37 @@ namespace WebApplication1.Data.Repositories
                 }
             }
         }
-        
+
+        public string GetAllProductsJson() //Entity Framework method
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                
+                var sql = @"SELECT 
+                            ProductID
+	                            ,p.ProductName
+	                            ,p.SupplierID
+	                            ,P.CategoryID
+	                            ,p.QuantityPerUnit
+	                            ,p.UnitPrice
+	                            ,p.UnitsInStock
+	                            ,p.UnitsOnOrder
+	                            ,p.ReorderLevel
+	                            ,p.Discontinued
+	                            ,s.CompanyName
+	                            ,c.CategoryName
+                                ,c.Description
+                                
+                            FROM Products p
+                            left join Suppliers s on p.SupplierID = s.SupplierID
+                            left join Categories c on c.CategoryID = p.CategoryID";
+                var productArray = conn.Query<ProductExt>(sql).ToList();
+                //var productArray = conn.Query<ProductExt>(sql, new { }).ToList();
+                return JsonConvert.SerializeObject(productArray);
+                
+            }
+        }
+
 
     }
 }

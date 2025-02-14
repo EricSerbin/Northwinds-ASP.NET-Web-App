@@ -57,7 +57,7 @@
 
             <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>
             @*<th class="details-control">@Html.DisplayNameFor(model => model.Category)</th>*@
-           @* <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>*@
+            @* <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>*@
 
 
         </tr>
@@ -68,54 +68,62 @@
             //var base64Picture = item.Category?.Picture != null ? Convert.ToBase64String(item.Category.Picture) : null;
 
             @*<tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
-            data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">*@
+                data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">*@
 
-        <tr data-categoryname="@(item?.CategoryName)" data-categorydescription="@(item?.Description)"
-            data-categoryid="@(item?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item?.Picture)">
+            <tr data-categoryname="@(item?.CategoryName)" data-categorydescription="@(item?.Description)"
+                data-categoryid="@(item?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item?.Picture)">
 
 
-            <td>
-                <a href="@Url.Action("Edit", "SupplierProducts", new { id = item.ProductID })" class="btn btn-success">Edit</a>
-            </td>
-            @*@Html.ActionLink("Edit", "Edit", new { id = item.ProductID }, new { @class = "btn btn-success" })*@
+                <td>
+                    <a href="@Url.Action("Edit", "SupplierProducts", new { id = item.ProductID })" class="btn btn-success">Edit</a>
+                </td>
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.ProductID }, new { @class = "btn btn-success" })*@
 
-            <td class="details-control">+</td>
-            <td>@(item?.ProductName) </td>
+                <td class="details-control">+</td>
+                <td>@(item?.ProductName) </td>
 
-            <td>@(item?.ProductID)</td>
+                <td>@(item?.ProductID)</td>
 
-            <td>@(item?.Discontinued) </td>
+                <td>@(item?.Discontinued) </td>
 
-            <td>@(item?.UnitPrice) </td>
+                <td>@(item?.UnitPrice) </td>
 
-            <td>@(item?.QuantityPerUnit) </td>
+                <td>@(item?.QuantityPerUnit) </td>
 
-            <td>@(item?.UnitsInStock) </td>
+                <td>@(item?.UnitsInStock) </td>
 
-            <td>@(item?.UnitsOnOrder) </td>
+                <td>@(item?.UnitsOnOrder) </td>
 
-            <td>@(item?.CategoryName)</td>
+                <td>@(item?.CategoryName)</td>
 
-            <td>@(item?.CompanyName)</td>
-            <td>Consider putting photos here</td>
+                <td>@(item?.CompanyName)</td>
+                <td>Consider putting photos here</td>
 
-            @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
-        This displays every image in order at the top of the page, good for unit testing *@
-            @*DisplayFor seems to override the requirement for display templates?*@
-        </tr>
+                @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
+                    This displays every image in order at the top of the page, good for unit testing *@
+                @*DisplayFor seems to override the requirement for display templates?*@
+            </tr>
 
         }
 
     </tbody>
 
 </table>
+<div>
+    <canvas id='myChart'></canvas>
+</div>
+<div>
+    <canvas id='secondaryChart'></canvas>
+    <canvis id='ternaryChart'></canvis>
+</div>
 
 @section  scripts{
     <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function () {
 
-
+            //Datatable
             var table = $('#mytable').DataTable({
                 'columnDefs': [{ 'orderable': false, 'targets': [0] }, { className: 'details-control', targets: [1] }],
                 'aaSorting': [[1, 'asc']],
@@ -123,7 +131,7 @@
                 //'class':'details-control', , 0-7 for targets
             });
 
-
+            //Drop down childrow html
 
             function format(name, description, id, picture) {
 
@@ -144,14 +152,15 @@
                     '<tr>' +
 
                     '<td>Category Picture:</td>' +
-                    '<td>' + "<img src = " + picture + " alt='Image unavailable' style ='border-radius: 15%'  />"+ '</td>' + 
+                    '<td>' + "<img src = " + picture + " alt='Image unavailable' style ='border-radius: 15%'  />" + '</td>' +
 
                     '</tr>' +
                     '</table>' +
-                    '</div>'; 
+                    '</div>';
 
             }
-
+            
+            //Drop down childrow javascript
             $('#mytable tbody').on('click', 'td.details-control', function () {
                 var tr = $(this).closest('tr'); //gets closest to cursor
                 var row = table.row(tr);
@@ -173,8 +182,151 @@
                     $('div.slider', row.child()).slideDown();
                 }
             });
-        });
-    </script>
-    }
 
-   
+
+        //const ctx = document.getElementById('myChart');
+        //First Chart
+        $.ajax({
+
+            url: '@Url.Action("GetProductsJson", "SupplierProducts")',
+            method: 'GET',
+            success: function (data) {
+
+                //"[{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Beverages\",\"CategoryID\":\"1\",\"Description\":\"Soft drinks, coffees, teas, beers, and ales\",\"Picture\":null,\"ProductID\":1,\"ProductName\":\"Chai\",\"SupplierID\":1,\"QuantityPerUnit\":\"10 boxes x 20 bags\",\"UnitPrice\":18.0000,\"UnitsInStock\":39,\"UnitsOnOrder\":0,\"ReorderLevel\":10,\"Discontinued\":false,\"Category\":null,\"Order_Details\":[],\"Supplier\":null},{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Beverages\",\"CategoryID\":\"1\",\"Description\":\"Soft drinks, coffees, teas, beers, and ales\",\"Picture\":null,\"ProductID\":2,\"ProductName\":\"Chang\",\"SupplierID\":1,\"QuantityPerUnit\":\"24 - 12 oz bottles\",\"UnitPrice\":19.0000,\"UnitsInStock\":17,\"UnitsOnOrder\":40,\"ReorderLevel\":25,\"Discontinued\":false,\"Category\":null,\"Order_Details\":[],\"Supplier\":null},{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Condiments\",\"CategoryID\":\"2\",\"Description\":\"Sweet and savory sauces, relishes, spreads, and seasonings\",\"Picture\":null,\"ProductID\":3,\"ProductName\":\"Aniseed Syrup\",\"SupplierID\":1,\"QuantityPerUnit\":\"12 -..."
+                parsedData = JSON.parse(data);
+
+                var dataParsedProductNames = parsedData.map(function(item){return item.ProductName;});
+                var dataParsedPrices = parsedData.map(function(item){return item.UnitPrice;});
+                var dataParsedUnitsOnOrder = parsedData.map(function(item){return item.UnitsOnOrder;});
+                var dataParsedUnitsInStock = parsedData.map(function(item){return item.UnitsInStock;});
+                var dataParsedQuantityPerUnit = parsedData.map(function(item){return item.QuantityPerUnit;});
+
+                var ctx = document.getElementById('myChart');
+
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: dataParsedProductNames,
+                        //labels: ['red', 'blue', 'yellow'],
+
+                        datasets: [{
+                            label: 'Units on Order',
+                            data: dataParsedUnitsOnOrder,
+                            parsing: {
+                                yAxisKey: 'UnitsOnOrder'
+                            }
+                        },
+                        {
+                            label: 'Unit Price',
+                            data: dataParsedPrices,
+                            parsing: {
+                                yAxisKey: 'UnitPrice'
+                            }
+                        },
+                        {
+                            label: 'Units in Stock',
+                            data: dataParsedUnitsInStock,
+                            parsing: {
+                                yAxisKey: 'UnitsInStock'
+                            }
+                        },
+                        {
+                            label: 'Quantity per Unit',
+                            data: dataParsedUnitsInStock,
+                            parsing: {
+                                yAxisKey: 'UnitsInStock'
+                            }
+                        }]
+
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            },
+            error: function(error) {
+                alert("error result is " + error);
+
+            }
+
+        });
+
+        //Second Chart
+        $.ajax({
+
+            url: '@Url.Action("GetProductsJson", "SupplierProducts")',
+            method: 'GET',
+            success: function (data) {
+
+                //"[{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Beverages\",\"CategoryID\":\"1\",\"Description\":\"Soft drinks, coffees, teas, beers, and ales\",\"Picture\":null,\"ProductID\":1,\"ProductName\":\"Chai\",\"SupplierID\":1,\"QuantityPerUnit\":\"10 boxes x 20 bags\",\"UnitPrice\":18.0000,\"UnitsInStock\":39,\"UnitsOnOrder\":0,\"ReorderLevel\":10,\"Discontinued\":false,\"Category\":null,\"Order_Details\":[],\"Supplier\":null},{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Beverages\",\"CategoryID\":\"1\",\"Description\":\"Soft drinks, coffees, teas, beers, and ales\",\"Picture\":null,\"ProductID\":2,\"ProductName\":\"Chang\",\"SupplierID\":1,\"QuantityPerUnit\":\"24 - 12 oz bottles\",\"UnitPrice\":19.0000,\"UnitsInStock\":17,\"UnitsOnOrder\":40,\"ReorderLevel\":25,\"Discontinued\":false,\"Category\":null,\"Order_Details\":[],\"Supplier\":null},{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Condiments\",\"CategoryID\":\"2\",\"Description\":\"Sweet and savory sauces, relishes, spreads, and seasonings\",\"Picture\":null,\"ProductID\":3,\"ProductName\":\"Aniseed Syrup\",\"SupplierID\":1,\"QuantityPerUnit\":\"12 -..."
+                parsedData = JSON.parse(data);
+
+                var dataParsedProductNames = parsedData.map(function(item){return item.ProductName;});
+                var dataParsedPrices = parsedData.map(function(item){return item.UnitPrice;});
+                var dataParsedUnitsOnOrder = parsedData.map(function(item){return item.UnitsOnOrder;});
+                var dataParsedUnitsInStock = parsedData.map(function(item){return item.UnitsInStock;});
+                var dataParsedQuantityPerUnit = parsedData.map(function(item){return item.QuantityPerUnit;});
+
+                var ctx = document.getElementById('secondaryChart');
+
+                var myChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: dataParsedProductNames,
+                        //labels: ['red', 'blue', 'yellow'],
+
+                        datasets: [{
+                            label: 'Units on Order',
+                            data: dataParsedUnitsOnOrder,
+                            parsing: {
+                                yAxisKey: 'UnitsOnOrder'
+                            }
+                        },
+                        {
+                            label: 'Unit Price',
+                            data: dataParsedPrices,
+                            parsing: {
+                                yAxisKey: 'UnitPrice'
+                            }
+                        },
+                        {
+                            label: 'Units in Stock',
+                            data: dataParsedUnitsInStock,
+                            parsing: {
+                                yAxisKey: 'UnitsInStock'
+                            }
+                        },
+                        {
+                            label: 'Quantity per Unit',
+                            data: dataParsedUnitsInStock,
+                            parsing: {
+                                yAxisKey: 'UnitsInStock'
+                            }
+                        }]
+
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            },
+            error: function(error) {
+                alert("error result is " + error);
+
+            }
+
+        });
+
+    });
+
+    </script>
+}
+
