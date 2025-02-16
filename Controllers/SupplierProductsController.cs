@@ -80,9 +80,10 @@ namespace WebApplication1.Controllers
 
         public ActionResult Edit(ProductExt product)
         {
-
-            if (ModelState.IsValid)
+            System.Diagnostics.Debug.WriteLine("model state is going to be evaluated ");
+            /*if (ModelState.IsValid)*/
             {
+
                 System.Diagnostics.Debug.WriteLine("model state is valid ");
                 var result = productRepository.EditProduct(product);
                 if (result)
@@ -106,42 +107,13 @@ namespace WebApplication1.Controllers
             return View(product);
 
 
-            DbContext northwinds2Entities = db;
-            northwinds2Entities.Entry(product).State = EntityState.Modified;
-            northwinds2Entities.SaveChanges();
-
-
-            
-            
-            System.Diagnostics.Debug.WriteLine("model state is valid ");
-            var success = productRepository.EditProduct(product);
-            if (success)
-            {
-                System.Diagnostics.Debug.WriteLine("model state is successful");
-                return RedirectToAction("Index");
-            }
-
-            return View(product);
-            
-
-            /*if (ModelState.IsValid)
-            {
-                System.Diagnostics.Debug.WriteLine("model state is valid ");
-                var success = productRepository.EditProduct(product);
-                if (success)
-                {
-                    System.Diagnostics.Debug.WriteLine("model state is successful");
-                    return RedirectToAction("Index");
-                }
-
-                return View(product);
-            }
-            System.Diagnostics.Debug.WriteLine("model state is invalid");
-            return View(product);*/
-
         }
 
-
+        public JsonResult GetProductsJson()
+        {
+            var jsonProducts = productRepository.GetAllProductsJson();
+            return Json(jsonProducts, JsonRequestBehavior.AllowGet);
+        }
 
         /*public ActionResult Edit([Bind(Include = "ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, Discontinued")] Product product)
 

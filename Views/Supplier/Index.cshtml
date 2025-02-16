@@ -119,7 +119,7 @@
                 <h5 class="modal-title">Contact Editor</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            
+
             @*//"{"ProductID":0,"ProductName":"Côte de Blaye","SupplierID":null,"CategoryID":null,"QuantityPerUnit":"12 - 75 cl bottles",
                 "UnitPrice":263.5000,"UnitsInStock":17,"UnitsOnOrder":0,"ReorderLevel":null,"Discontinued":false,"Category":null,
                 "Order_Details":[],"Supplier":null}" JSON format*@
@@ -127,10 +127,10 @@
                 <div class="container">
                     <table class="table table-striped" id="tblSupplier">
                     </table>
-                    
+
 
                 </div>
-              
+
             </div>
 
             <div class="modal-footer">
@@ -141,11 +141,229 @@
         </div>
     </div>
 </div>
+<div>
+    <canvas id='worldChart'></canvas>
+</div>
+<div>
+    <canvas id='myChart'></canvas>
+</div>
+<div>
+    <canvas id='secondaryChart'></canvas>
+</div>
+
 
 @section Scripts{
     <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.unpkg.com/chartjs-chart-geo@4.3.4/build/index.umd.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script> @*May be unnecessary*@
+
+    @*<script src="https://www.unpkg.com/world-atlas@2.0.2/countries-50m.json"></script>*@
+    
     <script>
 
+        
+        //});
+
+        $(document).ready(function(){
+             //geo chart
+                
+                const url = 'https://www.unpkg.com/world-atlas@2.0.2/countries-50m.json';
+                fetch(url).then((result) => result.json()).then((datapoint) => {
+                    const countries = ChartGeo.topojson.feature(datapoint, datapoint.objects.countries).features;
+
+                    console.log(countries[0].properties.name);
+
+                    const data = {
+                    labels: countries.map(country => country.properties.name),
+                    datasets: [{
+                        label: 'Countries',
+                        data: countries.map(country => ({feature: country, value: Math.random()
+                            })),
+            
+                        }]
+                    }; //closes data 
+
+                    const config = {
+                        type: 'choropleth',
+                        data,
+                        options: {
+                            showOutline: true,
+                            showGraticule: true,
+                            scales:{  
+                                projection:{
+                                    axis: 'xy',
+                                    projection: 'equalEarth'
+                                 }
+                            },
+                            plugins: {
+                                ChartDataLabels,
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }; //closes config
+                    const myChart = new Chart(document.getElementById('worldChart'),config);
+             });//closes 
+             //First Chart
+             $.ajax({
+
+                 url: '@Url.Action("GetSuppliersJson", "Supplier")',
+                 method: 'GET',
+                 success: function (data) {
+                     //alert("success is true");
+                     //"[{\"SupplierID\":1,\"CompanyName\":\"Exotic Liquids\",\"ContactName\":\"Charlotte Cooper\",\"ContactTitle\":\"Purchasing Manager\",\"Address\":\"49 Gilbert St.\",\"City\":\"London\",\"Region\":null,\"PostalCode\":\"EC1 4SD\",\"Country\":\"UK\",\"Phone\":\"(171) 555-2222\",\"Fax\":null,\"HomePage\":null},{\"SupplierID\":2,\"CompanyName\":\"New Orleans Cajun Delights\",\"ContactName\":\"Shelley Burke\",\"ContactTitle\":\"Order Administrator\",\"Address\":\"P.O. Box 78934\",\"City\":\"New Orleans\",\"Region\":\"LA\",\"PostalCode\":\"70117\",\"Country\":\"USA\",\"Phone\":\"(100) 555-4822\",\"Fax\":null,\"HomePage\":\"#CAJUN.HTM#\"},{\"SupplierID\":3,\"CompanyName\":\"Grandma Kelly's Homestead\",\"ContactName\":\"Regina Murphy\",\"ContactTitle\":\"Sales Representative\",\"Address\":\"707 Oxford Rd.\",\"City\":\"Ann Arbor\",\"Region\":\"MI\",\"PostalCode\":\"48104\",\"Country\":\"USA\",\"Phone\":\"(313) 555-5735\",\"Fax\":\"(313) 555-3349\",\"HomePage\":null},{\"SupplierID\":4,\"CompanyName\":\"Tokyo Traders\",\"ContactName\":\"Yoshi Nagase\",\"ContactTitle\":\"Marketing Manager\",\"Address\":\"9-8 Sekimai Musashino-shi\",\"City\":\"Tokyo\",\"Region\":null,\"Postal..."
+                     var parsedData = JSON.parse(data);
+
+                     var dataParsedCompanyName= parsedData.map(function(item){return item.CompanyName;});
+                     //alert("data parsed company name is "+dataParsedCompanyName);
+                     var dataParsedCity = parsedData.map(function(item){return item.City;});
+                     var dataParsedCountry = parsedData.map(function(item){return item.Country;});
+                     var dataParsedAddress = parsedData.map(function(item){return item.Address;});
+                     var dataParsedPhone = parsedData.map(function(item){return item.Phone;});
+                     var dataParsedContactName = parsedData.map(function(item){return item.ContactName;});
+
+
+                     //alert("data parsed country is "+dataParsedCountry);
+                     //alert("data parsed city is "+ dataParsedCity);
+                     var ctx = document.getElementById('myChart');
+
+                     var myChart = new Chart(ctx, {
+                         type: 'bar',
+                         data: {
+                             labels: dataParsedCompanyName,
+                             //labels: ['red', 'blue', 'yellow'],
+
+                             datasets: [{
+                                 label: 'City',
+                                 data: dataParsedCity,
+                                 parsing: {
+                                     yAxisKey: 'City'
+                                 }
+                             },
+                             {
+                                 label: 'Country',
+                                 data: dataParsedCountry,
+                                 parsing: {
+                                     yAxisKey: 'Country'
+                                 }
+                             },
+                             {
+                                 label: 'Address',
+                                 data: dataParsedAddress,
+                                 parsing: {
+                                     yAxisKey: 'Address'
+                                 }
+                             },
+
+                             {
+                                 label: 'Contact Name',
+                                 data: dataParsedContactName,
+                                 parsing: {
+                                     yAxisKey: 'ContactName'
+                                 }
+                             }]
+
+                         },
+                         options: {
+                             showOutline: true,
+                             showGraticule: true,
+                             scales: {
+                                 projection: 'equalEarth',
+                                     
+                             },
+                         },
+                         onClick: (evt, elems) => {
+                             console.log(elems.map((elem) => elem.element.feature.properties.name));
+                         },
+
+                     });
+                 },
+                 error: function(error) {
+                     alert("error result is " + error);
+
+                 }
+
+             });
+             //Second Chart
+             @*$.ajax({
+
+                url: '@Url.Action("GetSuppliersJson", "Supplier")',
+                method: 'GET',
+                success: function (data) {
+                    //alert("success is true");
+                    //"[{\"SupplierID\":1,\"CompanyName\":\"Exotic Liquids\",\"ContactName\":\"Charlotte Cooper\",\"ContactTitle\":\"Purchasing Manager\",\"Address\":\"49 Gilbert St.\",\"City\":\"London\",\"Region\":null,\"PostalCode\":\"EC1 4SD\",\"Country\":\"UK\",\"Phone\":\"(171) 555-2222\",\"Fax\":null,\"HomePage\":null},{\"SupplierID\":2,\"CompanyName\":\"New Orleans Cajun Delights\",\"ContactName\":\"Shelley Burke\",\"ContactTitle\":\"Order Administrator\",\"Address\":\"P.O. Box 78934\",\"City\":\"New Orleans\",\"Region\":\"LA\",\"PostalCode\":\"70117\",\"Country\":\"USA\",\"Phone\":\"(100) 555-4822\",\"Fax\":null,\"HomePage\":\"#CAJUN.HTM#\"},{\"SupplierID\":3,\"CompanyName\":\"Grandma Kelly's Homestead\",\"ContactName\":\"Regina Murphy\",\"ContactTitle\":\"Sales Representative\",\"Address\":\"707 Oxford Rd.\",\"City\":\"Ann Arbor\",\"Region\":\"MI\",\"PostalCode\":\"48104\",\"Country\":\"USA\",\"Phone\":\"(313) 555-5735\",\"Fax\":\"(313) 555-3349\",\"HomePage\":null},{\"SupplierID\":4,\"CompanyName\":\"Tokyo Traders\",\"ContactName\":\"Yoshi Nagase\",\"ContactTitle\":\"Marketing Manager\",\"Address\":\"9-8 Sekimai Musashino-shi\",\"City\":\"Tokyo\",\"Region\":null,\"Postal..."
+                    var parsedData = JSON.parse(data);
+
+                    var dataParsedCompanyName= parsedData.map(function(item){return item.CompanyName;});
+                    //alert("data parsed company name is "+dataParsedCompanyName);
+                    var dataParsedCity = parsedData.map(function(item){return item.City;});
+                    var dataParsedCountry = parsedData.map(function(item){return item.Country;});
+                    var dataParsedAddress = parsedData.map(function(item){return item.Address;});
+                    var dataParsedPhone = parsedData.map(function(item){return item.Phone;});
+                    var dataParsedContactName = parsedData.map(function(item){return item.ContactName;});
+
+
+                    //alert("data parsed country is "+dataParsedCountry);
+                    //alert("data parsed city is "+ dataParsedCity);
+                    var ctx = document.getElementById('secondaryChart')
+
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: dataParsedCompanyName,
+                            //labels: ['red', 'blue', 'yellow'],
+
+                            datasets: [{
+                                label: 'City',
+                                data: dataParsedCity,
+                                parsing: {
+                                    yAxisKey: 'City'
+                                }
+                            },
+                            {
+                                label: 'Country',
+                                data: dataParsedCountry,
+                                parsing: {
+                                    yAxisKey: 'Country'
+                                }
+                            },
+                            {
+                                label: 'Address',
+                                data: dataParsedAddress,
+                                parsing: {
+                                    yAxisKey: 'Address'
+                                }
+                            },
+
+                            {
+                                label: 'Contact Name',
+                                data: dataParsedContactName,
+                                parsing: {
+                                    yAxisKey: 'ContactName'
+                                }
+                            }]
+
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function(error) {
+                    alert("error result is " + error);
+
+                }
+
+            });
+*@
+        })
         var _id = "";
         $(".btnSupplies").on("click", function () {
        /* $("#btnEdit").on("click", function () {*/

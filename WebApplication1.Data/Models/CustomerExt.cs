@@ -7,14 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 using WebApplication1.Data.Model.ModelDB;
 
+
 namespace WebApplication1.Data.Models
 {
+    
+    //[BindProperties]
     public class CustomerExt
     {
+
+
         public int ID { get; set; }
 
-        [Required(ErrorMessage = "Company Name is required")]
-        //[StringLength(10, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        /*[Required(AllowEmptyStrings =false, ErrorMessage = "Company Name is required = test")]
+        [StringLength(10, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength =3)]
+        [DisplayName("Company Name")]
+        public new string CompanyName { get; set; }*/
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Company Name is required = test")]
+        [StringLength(10, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         [DisplayName("Company Name")]
         public string CompanyName { get; set; }
 

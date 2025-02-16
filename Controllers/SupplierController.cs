@@ -8,12 +8,14 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.Remoting.Contexts;
 using System.Runtime.Serialization;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication1.Data.Model.ModelDB;
+using WebApplication1.Data.Repositories;
 
 namespace WebApplication1.Controllers
 {
@@ -165,6 +167,94 @@ namespace WebApplication1.Controllers
 
             return Json(products.Select(x => new {productName=x.ProductName, quantityPerUnit=x.QuantityPerUnit, unitsInStock=x.UnitsInStock}), JsonRequestBehavior.AllowGet);
             
+        }
+        public JsonResult GetSuppliersJson() //JsonResult
+        {
+            System.Diagnostics.Debug.WriteLine("function reached GetSuppliersJson");
+            var jsonProducts = db.Suppliers.ToList();
+            
+
+            var jsonSettings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                //ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            System.Diagnostics.Debug.WriteLine("function is about to return jsonProducts");
+
+            //var productArray = conn.Query<ProductExt>(sql).ToList();
+
+            var suppliers = db.Suppliers
+            .Select(s => new 
+            {
+                s.SupplierID,
+                s.CompanyName,
+                s.ContactName,
+                s.ContactTitle,
+                s.Address,
+                s.City,
+                s.Region,
+                s.PostalCode,
+                s.Country,
+                s.Phone,
+                s.Fax,
+                s.HomePage                
+                
+            }).ToList();
+
+            string jsonSuppliers = JsonConvert.SerializeObject(suppliers, jsonSettings);
+            return Json(jsonSuppliers, JsonRequestBehavior.AllowGet);
+
+            //return Json(JsonConvert.SerializeObject(jsonProducts, jsonSettings), JsonRequestBehavior.AllowGet);
+            //            return Json(jsonProducts, JsonRequestBehavior.AllowGet);
+
+
+            /*using (northwinds2Entities context = new northwinds2Entities())
+            {
+                
+
+
+                IQueryable<Supplier> supplierList = context.Suppliers
+                    .Select(s => new Supplier
+                    {
+                        SupplierID = s.SupplierID,
+                        CompanyName = s.CompanyName,
+                        ContactName = s.ContactName,
+                        ContactTitle = s.ContactTitle,
+                        Address = s.Address,
+                        City = s.City,
+                        Region = s.Region,
+                        PostalCode = s.PostalCode,
+                        Country = s.Country,
+                        Phone = s.Phone,
+                        Fax = s.Fax,
+                        HomePage = s.HomePage
+                    });
+                *//*foreach (var supplier in supplierList)
+                {
+                    Console.WriteLine(supplier.CompanyName);
+                }*//*
+            }*/
+
+            
+
+           
+            /*Sql command
+             SELECT SupplierID 
+	            ,s.Address
+	            ,s.City
+	            ,s.CompanyName
+	            ,s.ContactName
+	            ,s.ContactName
+	            ,s.Country
+	            ,s.Fax
+	            ,s.PostalCode
+	            ,c.CategoryName
+	            ,c.Description
+
+            FROM Suppliers s
+            left join Categories c on c.CategoryID = s.SupplierID;*/
+
+            // return Json(JsonConvert.SerializeObject(conn.Query<ProductExt>(sql).ToList()), JsonRequestBehavior.AllowGet);
         }
 
     }
