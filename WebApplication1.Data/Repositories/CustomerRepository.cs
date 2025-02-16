@@ -37,12 +37,12 @@ namespace WebApplication1.Data.Repositories
             return false;
         }
 
-        public Customer Find(int? id) //CustomerExt is more apt when DbContext is updated to distance from entity framework
+        public CustomerExt Find(int? id)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
                 var sql = "SELECT * FROM Customers WHERE ID = @id";
-                return conn.Query<Customer>(sql, new { id }).FirstOrDefault();
+                return conn.Query<CustomerExt>(sql, new { id }).FirstOrDefault();
             }
         }
 
@@ -64,6 +64,37 @@ namespace WebApplication1.Data.Repositories
                 //return db.Customers.ToList();
             }
         }
+
+        public int Update(CustomerExt customer)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var sql = @"IF exists (Select 1 from Customers Where ID = @ID)
+                                BEGIN
+                                    UPDATE Customers SET
+                                        CompanyName = @CompanyName,
+                                        ContactName = @ContactName,
+                                        ContactTitle = @ContactTitle,
+                                        Address = @Address,
+                                        City = @City,
+                                        Region = @Region,
+                                        PostalCode = @PostalCode,
+                                        Country = @Country,
+                                        Phone = @Phone,
+                                        Fax = @Fax
+                                        -- Number = @Number
+                                    WHERE ID = @ID
+                                END
+                                ELSE
+                                BEGIN
+                                    Insert INTO Customers
+                                    (CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax)
+                                    VALUES
+                                    (@CompanyName, @ContactName, @ContactTitle, @Address, @City, @Region, @PostalCode, @Country, @Phone, @Fax)
+                                END
+                                ";
+                return conn.Execute(sql, customer);
+            }
+        }
     }
-   
 }

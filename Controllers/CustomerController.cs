@@ -49,40 +49,9 @@ namespace WebApplication1.Controllers
             return View(customer);
         }
         
-
-        // GET: Customer/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Customer/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] Customer customer)
-        {
-            if (ModelState.IsValid)
-            {
-
-                db.Customers.Add(customer);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(customer);
-        }
-
-        // GET: Customer/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Customer customer = customerRepository.Find(id);//should be CustomerExt when DbContext is integrated to distance from entity framework
-            //Customer customer = db.Customers.Find(id);
+            CustomerExt customer = id != null ? customerRepository.Find(id) : new CustomerExt();
             if (customer == null)
             {
                 return HttpNotFound();
@@ -90,12 +59,10 @@ namespace WebApplication1.Controllers
             return View(customer);
         }
 
-        // POST: Customer/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax")] Customer customer) //should be customer ext when DbContext is changed
+        public ActionResult Edit([Bind(Include = @"ID,CompanyName,ContactName,ContactTitle,Address,
+            City,Region,PostalCode,Country,Phone,Fax")] CustomerExt customer) 
         {
             if (ModelState.IsValid) //good spot for break points
             {
@@ -103,9 +70,11 @@ namespace WebApplication1.Controllers
                 northwinds2Entities.Entry(customer).State = EntityState.Modified;
                 northwinds2Entities.SaveChanges();*/
 
+                //db.Entry(customer).State = EntityState.Modified;
+                //db.SaveChanges();
 
-                db.Entry(customer).State = EntityState.Modified;
-                db.SaveChanges();
+                var result = customerRepository.Update(customer);
+
                 return RedirectToAction("Index");
             }
             return View(customer);
