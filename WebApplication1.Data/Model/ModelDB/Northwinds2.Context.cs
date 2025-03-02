@@ -12,8 +12,7 @@ namespace WebApplication1.Data.Model.ModelDB
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    using WebApplication1.Data.Models;
-
+    
     public partial class northwinds2Entities : DbContext
     {
         public northwinds2Entities()
@@ -34,12 +33,10 @@ namespace WebApplication1.Data.Model.ModelDB
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Region> Regions { get; set; }
         public virtual DbSet<Shipper> Shippers { get; set; }
-        public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Territory> Territories { get; set; }
         public virtual DbSet<CustomerCustomerDemo> CustomerCustomerDemoes { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
-
-        public virtual DbSet<ProductExt> ProductExts { get; set; }
-        public virtual DbSet<CustomerExt> CustomerExts { get; set; }
+        public virtual DbSet<ApiKey> ApiKeys { get; set; }
+        public virtual DbSet<Supplier> Suppliers { get; set; }
     }
 }

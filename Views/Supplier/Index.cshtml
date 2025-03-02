@@ -54,6 +54,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.HomePage)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Longitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Latitude)
+            </th>
 
 
             <th></th>
@@ -103,6 +109,12 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.HomePage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Longitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Latitude)
                 </td>
                 <td>
                     @Html.ActionLink("Delete", "Delete", new { id = item.SupplierID }, new { @class = "btn btn-danger", @style = "font-weight:600" })
@@ -160,15 +172,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script> @*May be unnecessary*@
 
     @*<script src="https://www.unpkg.com/world-atlas@2.0.2/countries-50m.json"></script>*@
-    
-    <script>
 
-        
+<script>
+
+
         //});
 
         $(document).ready(function(){
              //geo chart
-                
+
                 const url = 'https://www.unpkg.com/world-atlas@2.0.2/countries-50m.json';
                 fetch(url).then((result) => result.json()).then((datapoint) => {
                     const countries = ChartGeo.topojson.feature(datapoint, datapoint.objects.countries).features;
@@ -181,33 +193,107 @@
                         label: 'Countries',
                         data: countries.map(country => ({feature: country, value: Math.random()
                             })),
-            
+                        order: 1
                         }]
-                    }; //closes data 
+                    }; //closes data
 
                     const config = {
                         type: 'choropleth',
                         data,
                         options: {
                             showOutline: true,
-                            showGraticule: true,
-                            scales:{  
+                            showGraticule: false,
+                            scales: {
                                 projection:{
                                     axis: 'xy',
                                     projection: 'equalEarth'
-                                 }
+                                },
+                                /*projectionScale:1*/
+                            },
+                            onClick: (evt, elems) => {
+                                console.log(elems.map((elem) => elem.element.feature.properties.name));
                             },
                             plugins: {
+
                                 ChartDataLabels,
                                 legend: {
                                     display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            const dataIndex = context.dataIndex;
+                                            const dataset = context.dataset;
+                                            const dataItem = dataset.data[dataIndex];
+                                            if (dataset.type === 'bubbleMap') {
+                                                return `${dataItem.label}`;
+                                            }
+                                            else {
+                                                return `${dataItem.feature.properties.name}`;
+                                            }
+                                        }
+                                    }
                                 }
-                            }
-                        }
+                            },
+
+                        },
                     }; //closes config
-                    const myChart = new Chart(document.getElementById('worldChart'),config);
-             });//closes 
-             //First Chart
+                    const worldChart = new Chart(document.getElementById('worldChart').getContext("2d"),config);
+
+                    $.ajax({
+                        url: "@Url.Action("GetSuppliersJson", "Supplier")",
+                        method: 'GET',
+                        success: function (data) {
+
+                            const parsedGeoData = JSON.parse(data);
+
+                            parsedGeoData.forEach(item => {
+                                console.log(`Latitude: ${item.Latitude}, Longitude: ${item.Longitude}`, `SupplierID: ${item.SupplierID}`,`ContactName: ${item.ContactName}`, `CompanyName: ${item.CompanyName}`);
+
+                            });
+
+                            const bubbleData = parsedGeoData.map(item => ({
+                                latitude: item.Latitude,
+                                longitude: item.Longitude,
+                                radius: 10,
+                                label: `${item.CompanyName} ${item.ContactName} | ${item.Address}, ${item.City}, ${item.Region} ${item.Country}`
+                            }));
+
+                            const bubbleDataset = {
+                                type: 'bubbleMap',
+                                label: 'Supplier Locations',
+
+                                data: bubbleData.map(item => ({
+                                    x: item.longitude,
+                                    y: item.latitude,
+                                    r: item.radius,
+                                    label: item.label
+                                    //r: item.radius //r is for regular bubble chart while value is used for bubble chart interface
+                                })),
+
+                                backgroundColor: 'rgba(255,98,140,.5)',
+                                borderColor: 'rgba(255,98,140,1)',
+                                borderWidth: 1,
+                                hoverBackgroundColor: 'rgba(255, 99, 132, 0.7)',
+                                hoverBorderColor: 'rgba(255, 99, 132, 1)',
+                                hoverBorderWidth: 2,
+                                order: 0
+
+                            };
+
+                            worldChart.data.datasets.push(bubbleDataset);
+                            worldChart.update();
+                        },
+                        error: function (error) {
+                            alert("worldChart error has occured: " + error);
+                        },
+
+                    });
+
+
+                });//closes
+            //Second Chart
+
              $.ajax({
 
                  url: '@Url.Action("GetSuppliersJson", "Supplier")',
@@ -243,6 +329,13 @@
                                      yAxisKey: 'City'
                                  }
                              },
+                                 /*{
+                                     label: 'Phone',
+                                     data: dataParsedPhone,
+                                     parsing: {
+                                         yAxisKey: 'Phone'
+                                     }
+                                 },*/
                              {
                                  label: 'Country',
                                  data: dataParsedCountry,
@@ -272,7 +365,7 @@
                              showGraticule: true,
                              scales: {
                                  projection: 'equalEarth',
-                                     
+
                              },
                          },
                          onClick: (evt, elems) => {
@@ -452,7 +545,9 @@
 
         $('#mytable').dataTable({
 
-            'columnDefs': [{ 'orderable': false, 'targets': [0, 12] }], // hide sort icon on header of first column
+            //'columnDefs': [{ 'orderable': false, 'targets': [0, 12] }], // hide sort icon on header of first column
+
+            'columnDefs': [{ 'orderable': false, 'targets': [0, 14] }], // hide sort icon on header of first column
 
             'aaSorting': [[1, 'asc']] // start to sort data in second column
 
@@ -469,7 +564,7 @@
             window.location.href = '@Url.Content( "~/supplier/edit/")'+id;
         });
 
-    </script>
+</script>
 }
 
 @*//build another index ppage for supplies (done), have another button for producst

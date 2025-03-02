@@ -60,8 +60,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\BindPropertiesAttribute.cs" />
+    <Compile Include="Models\SupplierExt.cs" />
     <Compile Include="Models\CustomerExt.cs" />
     <Compile Include="Models\ProductExt.cs" />
+    <Compile Include="Model\ModelDB\ApiKey.cs">
+      <DependentUpon>Northwinds2.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\ModelDB\Category.cs">
       <DependentUpon>Northwinds2.tt</DependentUpon>
     </Compile>

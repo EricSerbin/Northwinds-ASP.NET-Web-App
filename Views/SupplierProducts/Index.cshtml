@@ -30,93 +30,127 @@
         cursor: pointer;
     }
 </style>
-<table id="mytable" class="table collapse-horizontal table-striped">
-    <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th>@Html.DisplayNameFor(model => model.ProductName)</th>
-
-            <th>@Html.DisplayNameFor(model => model.ProductID)</th>
-
-            <th>@Html.DisplayNameFor(model => model.Discontinued)</th>
-
-            <th>@Html.DisplayNameFor(model => model.UnitPrice)</th>
-
-            <th>@Html.DisplayNameFor(model => model.QuantityPerUnit)</th>
-
-            <th>@Html.DisplayNameFor(model => model.UnitsInStock)</th>
-
-            <th>@Html.DisplayNameFor(model => model.UnitsOnOrder)</th>
-
-            <th>@Html.DisplayNameFor(model => model.Category)</th>
-
-            <th>CompanyName</th>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Entries</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Bar Graph</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Radar Graph</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="chart-tab" data-bs-toggle="tab" data-bs-target="#chart-tab-pane" type="button" role="tab" aria-controls="chart-tab-pane" aria-selected="false">Time Graph</button>
+    </li>
 
 
 
-            <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>
-            @*<th class="details-control">@Html.DisplayNameFor(model => model.Category)</th>*@
-            @* <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>*@
+</ul>
+<div class="tab-content" id="myTabContent">
+    <h2 class="btn" data-bs-toggle="popover" title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">Popup Example</h2>
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+        <table id="mytable" class="table collapse-horizontal table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>@Html.DisplayNameFor(model => model.ProductName)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.ProductID)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.Discontinued)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.UnitPrice)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.QuantityPerUnit)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.UnitsInStock)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.UnitsOnOrder)</th>
+
+                    <th>@Html.DisplayNameFor(model => model.Category)</th>
+
+                    <th>CompanyName</th>
 
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            //base64picture ignore
-            //var base64Picture = item.Category?.Picture != null ? Convert.ToBase64String(item.Category.Picture) : null;
 
-            @*<tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
-                data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">*@
-
-            <tr data-categoryname="@(item?.CategoryName)" data-categorydescription="@(item?.Description)"
-                data-categoryid="@(item?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item?.Picture)">
+                    <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>
+                    @*<th class="details-control">@Html.DisplayNameFor(model => model.Category)</th>*@
+                    @* <th>@Html.DisplayNameFor(model => model.Category.Picture)</th>*@
 
 
-                <td>
-                    <a href="@Url.Action("Edit", "SupplierProducts", new { id = item.ProductID })" class="btn btn-success">Edit</a>
-                </td>
-                @*@Html.ActionLink("Edit", "Edit", new { id = item.ProductID }, new { @class = "btn btn-success" })*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    //base64picture ignore
+                    //var base64Picture = item.Category?.Picture != null ? Convert.ToBase64String(item.Category.Picture) : null;
 
-                <td class="details-control">+</td>
-                <td>@(item?.ProductName) </td>
+                    @*<tr data-categoryname="@(item.Category?.CategoryName)" data-categorydescription="@(item.Category?.Description)"
+                        data-categoryid="@(item.Category?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category?.Picture)">*@
 
-                <td>@(item?.ProductID)</td>
+                    <tr data-categoryname="@(item?.CategoryName)" data-categorydescription="@(item?.Description)"
+                        data-categoryid="@(item?.CategoryID)" data-categorypicture="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item?.Picture)">
 
-                <td>@(item?.Discontinued) </td>
 
-                <td>@(item?.UnitPrice) </td>
+                        <td>
+                            <a href="@Url.Action("Edit", "SupplierProducts", new { id = item.ProductID })" class="btn btn-success">Edit</a>
+                        </td>
+                        @*@Html.ActionLink("Edit", "Edit", new { id = item.ProductID }, new { @class = "btn btn-success" })*@
 
-                <td>@(item?.QuantityPerUnit) </td>
+                        <td class="details-control">+</td>
+                        <td>@(item?.ProductName) </td>
 
-                <td>@(item?.UnitsInStock) </td>
+                        <td>@(item?.ProductID)</td>
 
-                <td>@(item?.UnitsOnOrder) </td>
+                        <td>@(item?.Discontinued) </td>
 
-                <td>@(item?.CategoryName)</td>
+                        <td>@(item?.UnitPrice) </td>
 
-                <td>@(item?.CompanyName)</td>
-                <td>Consider putting photos here</td>
+                        <td>@(item?.QuantityPerUnit) </td>
 
-                @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
-                    This displays every image in order at the top of the page, good for unit testing *@
-                @*DisplayFor seems to override the requirement for display templates?*@
-            </tr>
+                        <td>@(item?.UnitsInStock) </td>
 
-        }
+                        <td>@(item?.UnitsOnOrder) </td>
 
-    </tbody>
+                        <td>@(item?.CategoryName)</td>
 
-</table>
-<div>
-    <canvas id='myChart'></canvas>
+                        <td>@(item?.CompanyName)</td>
+                        <td>Consider putting photos here</td>
+
+                        @*<img src="@WebApplication1.Controllers.HtmlExtensions.BufferImageOffset(item.Category.Picture)" alt="Pictures is Unavailable" />
+                            This displays every image in order at the top of the page, good for unit testing *@
+                        @*DisplayFor seems to override the requirement for display templates?*@
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+    </div>
+    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+        <div>
+            <canvas id='myChart'></canvas>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+        <div>
+            <canvas id='secondaryChart'></canvas>
+            <canvas id='ternaryChart'></canvas>
+        </div>
+    </div>
+    
+    <div class="tab-pane fade" id="chart-tab-pane" role="tabpanel" aria-labelledby="chart-tab" tabindex="0">
+        <canvas id='calenderChart'></canvas>
+    </div>
 </div>
-<div>
-    <canvas id='secondaryChart'></canvas>
-    <canvis id='ternaryChart'></canvis>
-</div>
+
+
+
+
 
 @section  scripts{
     <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
@@ -160,7 +194,7 @@
                     '</div>';
 
             }
-            
+
             //Drop down childrow javascript
             $('#mytable tbody').on('click', 'td.details-control', function () {
                 var tr = $(this).closest('tr'); //gets closest to cursor
@@ -274,7 +308,7 @@
 
                 var ctx = document.getElementById('secondaryChart');
 
-                var myChart = new Chart(ctx, {
+                var secondaryChart = new Chart(ctx, {
                     type: 'radar',
                     data: {
                         labels: dataParsedProductNames,
@@ -325,6 +359,77 @@
             }
 
         });
+
+            //fourth calenderChart
+            $.ajax({
+
+            url: '@Url.Action("GetProductsJson", "SupplierProducts")',
+            method: 'GET',
+            success: function (data) {
+
+        //"[{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Beverages\",\"CategoryID\":\"1\",\"Description\":\"Soft drinks, coffees, teas, beers, and ales\",\"Picture\":null,\"ProductID\":1,\"ProductName\":\"Chai\",\"SupplierID\":1,\"QuantityPerUnit\":\"10 boxes x 20 bags\",\"UnitPrice\":18.0000,\"UnitsInStock\":39,\"UnitsOnOrder\":0,\"ReorderLevel\":10,\"Discontinued\":false,\"Category\":null,\"Order_Details\":[],\"Supplier\":null},{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Beverages\",\"CategoryID\":\"1\",\"Description\":\"Soft drinks, coffees, teas, beers, and ales\",\"Picture\":null,\"ProductID\":2,\"ProductName\":\"Chang\",\"SupplierID\":1,\"QuantityPerUnit\":\"24 - 12 oz bottles\",\"UnitPrice\":19.0000,\"UnitsInStock\":17,\"UnitsOnOrder\":40,\"ReorderLevel\":25,\"Discontinued\":false,\"Category\":null,\"Order_Details\":[],\"Supplier\":null},{\"CompanyName\":\"Exotic Liquids\",\"CategoryName\":\"Condiments\",\"CategoryID\":\"2\",\"Description\":\"Sweet and savory sauces, relishes, spreads, and seasonings\",\"Picture\":null,\"ProductID\":3,\"ProductName\":\"Aniseed Syrup\",\"SupplierID\":1,\"QuantityPerUnit\":\"12 -..."
+            parsedData = JSON.parse(data);
+
+            var dataParsedProductNames = parsedData.map(function(item){return item.ProductName;});
+            var dataParsedPrices = parsedData.map(function(item){return item.UnitPrice;});
+            var dataParsedUnitsOnOrder = parsedData.map(function(item){return item.UnitsOnOrder;});
+            var dataParsedUnitsInStock = parsedData.map(function(item){return item.UnitsInStock;});
+            var dataParsedQuantityPerUnit = parsedData.map(function(item){return item.QuantityPerUnit;});
+
+            var ctx = document.getElementById('calenderChart');
+
+            var secondaryChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: dataParsedProductNames,
+                    //labels: ['red', 'blue', 'yellow'],
+
+                    datasets: [{
+                        label: 'Units on Order',
+                        data: dataParsedUnitsOnOrder,
+                        parsing: {
+                            yAxisKey: 'UnitsOnOrder'
+                        }
+                            },
+                            {
+                                label: 'Unit Price',
+                                data: dataParsedPrices,
+                                parsing: {
+                                    yAxisKey: 'UnitPrice'
+                                }
+                            },
+                            {
+                                label: 'Units in Stock',
+                                data: dataParsedUnitsInStock,
+                                parsing: {
+                                    yAxisKey: 'UnitsInStock'
+                                }
+                            },
+                            {
+                                label: 'Quantity per Unit',
+                                data: dataParsedUnitsInStock,
+                                parsing: {
+                                    yAxisKey: 'UnitsInStock'
+                                }
+                            }]
+
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function(error) {
+                    alert("error result is " + error);
+
+                }
+
+            });
+
 
     });
 

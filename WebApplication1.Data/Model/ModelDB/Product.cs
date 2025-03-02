@@ -11,8 +11,7 @@ namespace WebApplication1.Data.Model.ModelDB
 {
     using System;
     using System.Collections.Generic;
-    using WebApplication1.Data.Models;
-
+    
     public partial class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

@@ -34,5 +34,10 @@ namespace WebApplication1.Controllers
 
             return View();
         }
+
+        public ActionResult MenuTest()
+        {
+            return View();
+        }
     }
 }
