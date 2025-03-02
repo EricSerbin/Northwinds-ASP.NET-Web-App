@@ -37,19 +37,6 @@ namespace WebApplication1.Controllers
             var apiKeyHolder = db.ApiKeys.FirstOrDefault(a => a.Name == "HERE");
             hereApiKey = apiKeyHolder.ApiKey1;
             hereUrl = apiKeyHolder.CallerUrl;
-            //var conn = new SqlConnection(db.Database.Connection.ConnectionString);
-            /*using ( var conn = new SqlConnection(db.Database.Connection.ConnectionString))
-            {
-                
-                SqlCommand command = new("SELECT * FROM ApiKeys WHERE Name= 'HERE'", conn);
-                conn.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                if(reader.Read())
-                {
-                    hereApiKey2 = reader["ApiKey"].ToString();
-                }
-
-            }*/
         }
 
         //private readonly string hereApiKey2 = db.ApiKeys.Where(a => a.Name = 'HERE');
